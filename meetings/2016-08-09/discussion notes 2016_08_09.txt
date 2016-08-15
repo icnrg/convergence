@@ -1,0 +1,151 @@
+Discussion on Aug 9, 2016
+
+Notes Aug 9, 2016
+
+- Slide 11: aggregation
+- MM: You can cause the NDN method to go to max holddown by sending series of Interests within holddown period.
+- AA: Don’t think that’s an effective attack.
+- MM: Think aggregation is rare, don’t need complex mechanism
+- LZ: That’s speculation.  Flash crowd important.  E.g. olympics it woudn’t be that rare.
+- MM: We still allow aggregation, it’s only retransmission.
+- MM: You can do inductive proof.
+- AA: We did CCN mechanism in NDN sim and it lead to explosion.
+- LZ: We need usage experimentation, then adjust engineering tuning.  Not theory, we need intuitive understanding.
+- DO: Agree with 1 exception.  If there is a need to put something in the protocol, we need to agree on what that is.
+- LZ: Not exactly sure.  Different teams do differenet experiments.  Should make statement this is subject to experimentation.
+- DO: Right.  Beyond that if you can agree on small set of protocol machinery, then that’s better than fragmenting community.
+- LZ: Don’t follow
+- DO: machinery depends on nonces one does not.  Then agreeing on nonces allows more experimentation.  Want one protocol base.
+- LZ: You’re saying we should be more inclusive of experiments
+- MM: I don’t think there’s any specific field related to this.
+- Slide 12: Data centric security
+- AA: Signed interest: naming of signature must be reflected in the signature
+- MM: Putting signature on interest must be part of application protocol.  We also allow integrity checks.  Need to put something in the name for MAC or signature.
+- LZ: That’s right.  DOn’t arbitrarily put it on. 
+- AA: Maybe bundle this with Interest Payload.
+- LZ: Signed interest really separable from payload.  Need additional discussion.
+- MM: NDN mechanism has by default unique names whereas in CCNx you need to put something in the name for multiplexing.
+- AA: See similarity.  Signature is like a payload.
+- LZ: Think it’s still different issues we should cover separately.  If it’s in the name, it’s not payload.
+- AA: It’s exactly the same thing.  We say payload and signature must be part of the name.
+- Slide 13: Data Digest
+- MM: clarify that if no signature blck, not part of digest.  If signature block it is included.
+- Slide 14: Interest refinements
+- LZ: Marc did discovery draft. 
+- MM: I think you can do NDN equivalent
+- LZ: But not all NDN packets have selectors
+- MM: I think they do, t	here are default values
+- LZ: Let me think about it.
+- MM: On slide 13, maybe we can classify the selectors
+- AA: (reorganize slide)
+- Slide 15: Cache verification
+- AA: What is keyid?
+- MM: Hash of public key
+- AA: A cache must verify the signature?
+- MM: Yes, 
+- AA: How to figure out key?
+- MM: It must be included in the Interest or in the Content Object
+- AA: Not fully defined?
+- MM: Yes, way to do in Content Object defined, in Interest not defined.
+- AA: Related topic KeyLocator.  Maybe not part of cache verification.
+- AA: For NDN, no defined if cache must do.  Cache could do.  Another mechanism is “consumer reports” to trigger cache eviction or verification.  Not defined mechanism.  Was experiment.
+- LZ: How are routers going to do verification is open issue?  There’s design question about if architecture do verification.  Otherwise you live with local decision.  Related question: should protocol design provide assistance to verification.
+- MM: There’s no exclusions in CCNx 1.0 so we cannot work around bad cache results.
+- AA: it is a requirement to have exclusion.
+- MM: I agree we need to get around bad cache results.  I don’t think exclusions are necessary.
+- LZ: Uplevel: do consumers need to depend on router correct behavior?  I would not trust the routers to do cache verification for my application to correctly behave.  Need way to get around bad boxes.
+- MM: There’s other ways to do it.
+- LZ: There should be no fate sharing with components inside the network.
+- MM: In NDN you depend on nodes doing the right thing
+- LZ: We will retransmit and use different paths.
+- MM: We can do same thing.
+- LZ: Then you don’t depend on device doing the right thing.
+- MM: I might be missing a subtlety here
+- PP: How does NDN do it?
+- LZ: We use exclusions.  In routers doing retransmissions use different paths.
+- PP: If you have a choice
+- LZ: If you have no choice, then you have no choice.
+- PP: Even with the KeyId mechanism, I can avoid a bad response?
+- AA: The way to avoid it is to put a KeyId in it.  Hopefully you know the KeyId.  But this is a big assumption.
+- PP: Functionally the KeyId does it, maybe not practical?
+- DO: We’re making this complicated.  We’re trying to get past a bad cache.  1) use different path, 2) tell the cache to only give me data if it’s known to be good.  Seems like a simple mechanism.  Router can decide to verify or not.  All you lose is the caching.  You should never be returning bad data from caches.
+- AA: I’d disagree with 3rd point.  Nobody may know the data is bad.
+- DO: You should only return data known to be good from the cache.
+- LZ: I think that’s desired property.  Should system be built on that desired property.
+- DO: Fair enough.  Systems should be designed to specify what you want, not what you don’t want.  The things you don’t want is unbounded.
+- LZ: The one thing you want is to avoid dependency on any particular box.
+- DO: Exclusions have property to be unbounded.
+- LZ: Yes, it’s unbounded.  It’s up to the usage in a specific scenario you want to use if the unwanted content is unbounded.  Not abstractly speaking.  Maybe exclusions should be separate topic.
+- LZ: I don’t wnat to depend on cache verification for application correctness.
+- DO: I think we’re not being precise enought to make progress.
+- PP: You say cache should never return invalid data.  So you check when you store or when you return.
+- DO: Engineering tradeoff.  That’s single system issue.  Semantically doesn’t matter.  Important thing is to verify before return if have keyid restriction.
+- MM: Alex’s point is might not know which key is used to sign.
+- AA: certificate chain might be know, but specific key might not be known.  Assuming you can get that key before you get the data packet is a limitation.
+- DO: Limitation is you cannot return from cache.  One way of getting it is to prefetch.  It’sa strong invariant.
+- LZ: we’re going down in some specific details.
+- AA: I’ll agree and disagree.  Cache should not return invalid data.  May not be strict on how mechanism is defined.
+- AA: It’s based on system usage.  You may always have bad network.
+- GQ: Is this optional?
+- MM: It’s mandatory if you run a CS.  If you want to respond from CS, you must verify the signature.
+- GQ: How do routers avoid bad paths?
+- AA: We want property for routers to determine this data should be avoided.  I want to avoid defining a single strict mechanism.  We have the KeyDigest method.  We have exclude mechanism, which can also be used as a report mechanism.  Ability of consumers to report to caches to purge content.
+- LZ: The design should provide consumer to explore alternative paths to retrieve their data.
+- MM: what do you mean by explore paths?
+- LZ: You let consumers exclude.
+- MM: That has to do with object not path.
+- LZ: Routers will avoid paths that they got bad data from.
+- MM: So a router would maintain a history?
+- LZ: That’s a design issue, I’m stating desired property of the design.
+- PP: We’re deep diving on something here.  There’s a way of doing it in CCN and several ways in NDN.  Let’s move on assuming we understand the differences.
+- LZ: Do we agree on desired properties?
+- PP: Cache should only return valid data.  Where it doesn’t consumer needs some recourse to get a valid copy.  There’s ways of doing that in NDN and CCN.
+- PP: In CCN there’s a specific way, in NDN there’s different ways.
+- LZ: Let’s not make judgement on methods.
+- PP: Desired property is there’s recourse for consumer.
+- Slide 16: Cache control
+- AA: Expiry time must be removed by then.
+- MM: Cannot be served.
+- AA: So this does not apply to forwarding
+- MM: yes, does not apply forwarding
+- MM: We thought about making RCT relative, but for not its absolute.
+- PP: You have two times: recommended time and expiration time.  NDN, there is one time?
+- AA: There is one time, considered “fresh”.  Stale is still OK to cache and serve, but only controlled by MustBeFresh.  After the fresh period, only the Interests without MustBeFresh would get the packet.
+- DO: This definition of freshness is a policy of producer, not consumer.  For many apps I know, what is fresh is better made by consumer than producer.
+- LZ: Freshness period is producer’s control on how often it wants to get new Interest.  Then I don’t expect the same interest for same data for that period.  Because it should be consumed out of cache (assuming not dropped by cache).
+- DO: But that’s not semantic you have.
+- LZ: Considering all these parameters we do need to consider the producers and consumers choices.  Still in early stage what is best mechanism.
+- DO: I want to be precise.  THere are 2 sparate dimenions even on producer.  1) how frequently produce new data, 2) when does older data become useless to consumer.  E.g. time series data may be useful for K most recent.
+- LZ: MustBeFresh only useful if you don’t know the exact name.  That’s how you fetch data you want, not selectors.
+- RD: Another reason for consumers to specify freshness is to allow different consumer behavior.  If consumers can specify policy then different consumers can have different policies.
+- LZ: Once consumers figure out how name looks, they can get any data they way.  Producers use to reduce interest flood.
+- DO: Should freshness affect cache behavior.
+- LZ: Not really, once they know what thye want they can get it regardless 
+- MM: There’s no way to tell if response if 
+- LZ: 
+- MM: FreshnessSeconds cannot be reset.  It could live in the network for a long time.
+- LZ: It’s only used in the discovery process.
+- MM: But how is that discovery if the content object can live for a long time beyond the period?
+- LZ: You need to understand how often you produce data.  You can talk about imaginary cases where you set the period wrong.
+- LZ: We need to understand naming conventions where most will be fetched via exact names.
+- Slide 17: Fragmentation
+- LZ: Do you plan to keep end-to-end as part of the protocol?
+- MM: I wouldn’t say it’s part of the protocol yet.
+- AA: I don’t see how end-to-end would work.  Questionable about how to do in Interest?
+- MM: In the end-to-end, you needed whole name in first fragment.
+- AA: Wouldn’t you have same issue as in IP end-to-end?  Single lost fragment wastes whole packet?
+- MM: The secure fragmentation is not part of the protocol.
+- MM: hop-by-hop does have buffering problem if people send large packets that have to be buffered at each hop.
+- LZ: Yes, that should be documed.
+- Conclusion:
+- PP: We’ll come back to cache control.  We need more thinking about behavior to understand it.
+- PP: Next time take up the discovery question.  Marc, Lixia, Alex is that ok?
+- Marc & Alex: OK
+- PP: Want to go back to link and packet structure.
+- MM: I have an updated document from Jeff T.’s comments.  I’ll send that out today.
+- PP: That’s one aspect.  We’d like to start at the top and work down.  So it’s clear we’re talking about that and not all name discovery like Manifests.
+- PP: I’ll post the audio.
+- PP: Marc, point me to the notes and i’ll put those on website.
+
+1
+
