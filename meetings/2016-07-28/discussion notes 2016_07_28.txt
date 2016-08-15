@@ -1,0 +1,215 @@
+
+Discussion on July 28, 2016
+
+- Meeting opening
+- PP: This meeting technical, not about IPR.  Meeting should follow IRTF policy.
+- Nacho: Follow NoteWell?
+- Dirk: Note Well does apply
+- Dave: Confirms Note Well applies
+- PP: This is an ICNRG/IRTF meeting?
+- Dave: yes, if you want to change, we’ll drop out
+- PP: Is everyone OK with this?
+- CW: yes
+- MM: yes
+- Amreesh Phokeer: yes
+- PP: Time for meetings going forward.  Current time just happened to work this week.  We’re spanning many timezones.  At least 10.  Current 8am Pacific Coast, about 5pm CET.
+- LZ: Prefer to push down a little.  Beichuan cannot make time.
+- Dirk: It’s ok to move later.
+- MM: I have another call at 10am on Thursday, so 9am would not work on that day.
+- LZ: Another day could work.
+- Amreesh: do a poll and select best one. www.doodle.com
+- PP: Will setup doodle poll.  Will try to do today.  Please complete in next few days so we don’t delay.
+- PP: Ask that people prepare material (slides, etc) and distribute at least 24 hrs before the call if they want to talk about something.  We will post on wiki too.
+- AA: Created slide deck (link in the other document).  Slides 3-8 summarize last meeting.
+- Review Alex’s slides
+- AA: Recap the first few slides.
+- Slide 3 (Naming)
+- LZ: the exact name should be able to retrieve data, digest not always needed
+- NS: If you want to add that comment, then it’s “applications should make names unique.”  But that’s a convention.  There’s no way to enforce that an Exact name is unique.
+- PP: That’s a difficult thing?
+- NS: You cannot enforce it especially with distributed names.  Nothing enforces it.  Marc mentions that Key is part of the name.  You could have 2 entities like “lightswitch”.  You need to check with the world that no one else is using name.  It should be bad if we have network expect exact names unqiue.  Becomes ossified.  Routers/firewalls expect it.  That leads to bad things.  Apps could choose, but not part of underlying network.
+- PP: @Lixia, network can operate on just exat name without digest?  Is this a matching issue or somethjing about naming?
+- DK: Architecutre should not make any distinction about uniqueness of names.
+- NS: I’m just talking about the slide that says “exact names should unqiuely identify data in most cases.”  There’s no way to enforce this or know if 2 things are same or not same.  Network should behave correctly even if there’s duplicate names.
+- LZ: Up to applications about how they use namespace.
+- NS: But there’s no way to know this
+- LZ: When you write your app, you can know this.
+- NS: But we don’t control routing and security to know this.
+- LZ: This relates to global namespace management.
+- DO: The routing based on name assumes no ambiguities in namespace management.  ICN routing cannot resolve that.
+- LZ: routers cannot do correct forwarding if only working on digest.
+- NS: Just critique the “exact name” comment.
+- NS: Anyone can name anyone anything
+- LZ: No
+- LZ: I think this is speculative opinions.
+- PP: We want to separate definitions from how we act on those.  “Data packet uniquely identified by the full name” uniqueness comes from hash.  I think we have the intention that the full name uniquely names the packet.
+- MM: Any name with hash has very high likelihood of uniquely identifying packet
+- LZ: I would agree with that, but cannot always know hash ahead of time.
+- NS: Anyone can name anything
+- LZ: Cannot know the hash without extra round trips.  You can fetch in most cases without hash
+- MM: I think it’s true in CCN and NDN that exact names could work without hash if apps play by proper conventions.
+- PP: Do we agree with these definitions of the names?
+- (various): yes
+- LZ: I think there’s more to the NDN definition
+- Slide 4 (Data retrieval)
+- AA: recap slide
+- DO: another precondition on Exact name: only deterministic if you match on a key as well.  If you do not, a malicious app could inject bad stuff.
+- AA: Trying to defer attacks to later.  Assume only correctly behaving apps.
+- RD: Need to consider malicious and incorrectly behaving nodes
+- AA: Deterministic vague.  No good definition.
+- DO: Define “deterministic” as “all consumers asking for same name get same thing.”
+- LZ: Disagree.  If use exact name should not happen.
+- DO: Whatabout bad namespace management?
+- LZ: SHould not happen, it’s an error condition.
+- LZ: Hashes could have those errors with bad app developers.
+- NS: Trying to define architectures over whole stack.  Two routes could return different things and would not be wrong thing.
+- LZ: If names immutable one name should name one data.  If app deterministaclly names each piece of data, its the apps job to hold that pre-condition true.
+- NS: But what if app does not want to?
+- LZ: If app wants to do that it should use different names.
+- LZ: You could make it work but that’s not NDN definition.
+- NS: But I would write an app like that.
+- PP: Leave it up the application to define each piece of data with unique name.
+- LZ: That statement “if app deterministically names” is Dave’s statement.
+- PP: Did we say things last week that were ambiguous?  Everytime I ask for something with that name I get that piece of data?
+- LZ: If apps do that, then yes.
+- MM: We should distinguish between a forwrader vs consuymer
+- LZ: Yes, forwarder should not make any distinctions about properties of a name
+- LZ: We have not gotten into how a forwarder behaves
+- GQ: Can we distinguish forwarder vs app?
+- PP: I interpreted “fetching” as 
+- LZ: “Fetching” is a consumer operation.  
+- PP: If it gets something with that name it will be happY?
+- LZ: no there’s other checking
+- PP: There’s a chance you asked for something with exact name and there’s a chance it will not be right?
+- LZ: Yes
+- PP: If it doesn’t satisfy intent of interest, you can’t then ask for it again with same name?
+- LZ: There’s a lot of details there.  E.g. signature does not verify, you need to talk about how to recover from that.  We’re still trying to make deifnitions.
+- GQ: Garbage in, Garbage out.  Forwarder does not verify.  If forwarder does not verify signture?
+- LZ: We have not got to that assumption yet.
+- PP: @Lixia app can ask for something by any of Full/Exact/Prefix.  And we’re just having debate about how practical?  Or are we missing somehting about definition?
+- LZ: Don’t know why we have question here.  This was from Wednesday discussion.
+- MM: no issue about the definitions, we’re trying to talk about matching without defining matching.
+- NS: Determinist on exact name only if “system” is deterministic.  We’re talking about the system at a whole not individual components.
+- NS: We’re trhing to talk about these as philosophical things, not the technical mechanics.  We’d probably agree more if we talked mechanics.  When we talk about it at this big scope, then yu have to take in to account routing, caching, etc.
+- MM: You can also time scope the name, at least in CCN.
+- Ravi: can we just have 2 types of names?  Full name and Exact name?
+- NS: @ravi they are just defining terms.
+- MM: It’s so we have consistent terminology.
+- LZ: Data is immutable.  Exact name should name that same piece of data.
+- NS: Cannot be enforced cannot be proved.
+- LZ: You cannot say that.
+- MM: Unless there is some other mechanism to coordinate names you cannot guarantee unique names
+- LZ: correct.  I think that assumption is required.  If prefix not unique, routing gets confused.
+- PP: Is there a comment that distinguishes the assumption between CCN vs NDN?
+- LZ: I think everyone needs name management coordination.
+- PP: There’s an oracle or something?
+- LZ: We can just borrow what’s going on with today’s namespace management.  It’s not a single oracle.
+- PP: When I want to write an app, I need a namespace.  Some other entity will allocate me a name syntax that guarantees its unique?
+- LZ: I think that’s correct.  Namespace design remains ongoing research.  Today’s internet works on namespace allocation.  The global unique namespace is not the only namespace.  Locally scoped namespace holds great promise.
+- PP: These name may have different scopes.
+- LZ: CCN/NDN are network protocols.  They work on certain assumptions, but they do not define namespaces.
+- PP: there is a mechanism in place that no two entities use same name.  Is there an independent function?  In NDN sounds like yes.  Is it necessary?
+- NS: First, CCN/NDN needs some coordination on namespace used for routing.  In NDN, they encourage apps to unique name all data, generating unique exact names.
+- LZ: yes, I think so.  I think it’s best for apps to do that.
+- NS: CCN/NDN agree there needs to be coordinated namespace for routing/forwarding to work.  NDN believes that apps should use unique names for data.
+- Ravi: names from app perspective.
+- LZ: Power of ICN uses app names for forwarding.
+- Ravi: May not scale.
+- GQ: You have agreement on routing, and NDN has assumption on app part.  Is that applied to forwarding part as well?
+- LZ: Don’t know if you got Nacho’s comment correctly.
+- GQ: There’s assumption on app part that is NDN specific.
+- LZ: Don’t think it’s relevant.
+- PP: Please repeat for recording.
+- NS: In order to have forwarding and routing, we need a coordinating namespace (multiple mechanisms posible).  NDN encourages unique exact names for every piece of data.
+- LZ: NDN expects applications to assign unique exact names to each piece of data.  When names not unique, the full name will guarantee uniqueness.
+- PP: @nacho there is no such best practice?
+- NS: For CCN, both are correct.  NOt assumption system makes.
+- PP: Didnt say required in NDND
+- LZ: Not about correctness, it’s about engineering apps.
+- NS: Do not agree that exact names make everyihng work better.
+- LZ: It’s not about correctness.
+- PP Can we move on?
+- AA: Data in NDN can be requested via all 3 names (exact, full, prefix).  CCNx only exact for full.
+- MM: yes
+- Slide 5 (Payload in Interest)
+- AA: payload is part of name, with CCNx it allows an explicit payload field (name needs to uniquely define it).
+- AA: What’s affect on payload in interest to flow balance?  Not known.
+- MM: CCN does not exclude putting payload in the name
+- RD: NDN has no other place to put it?
+- AA: Yes, cannot put someplace else.
+- LZ: NDN does not have payload field in Interest.
+- PP: Comment about flow balance applies to both?
+- AA: some.  If data not bigger than interest, may not be right.  Some mechanisms require data to be larger than interest.
+- NS: Unless you can predict coming back from going, it is unpredictable.  But it’s also a problem if I get a 2GB packet.
+- AA: Let’s skip that.
+- AA: In NDN data must be larger than Interest.
+- LZ: I think its different than having separate field.
+- MM: Having exclusions could make Interest larger than Data.  So not true Interest always larger than Data.
+- NS: So you are saying that because CCN might be more efficient its wrong?
+- LZ: May or maynot
+- AA: May not be good to put payload in data because it encourages bad behavior.
+- LZ: Identify commonality.  You put payload into Interest (no matter mechanism) you should do that only out of necessity.
+- GQ: So it’s only engineering?
+- MM: Yes, I think in general its preferred not to put data in Interest, but there are very good reasons to do it sometimes.
+- DO: I don’t think we have enough experience to say which is better.
+- LZ: I think it’s a shared view that you should not put data in Interest.
+- DO: Don’t make names longer than they should be and don’t make Interest packets bigger than they should be.
+- NS: Then you could say don’t use long names except out of necessity.
+- LZ: Which encoding is better is still to be understood.
+- NS: But you’re repeating the payload in the Data.  I don’t think we should make arguments about why todo it.
+- LZ: Is flow balance a desired property? We encourage it.
+- MM: She is asking is it good.  We should add agenda item.
+- DO: We will have to disclose a bunch of Cisco IPR on flow balance.
+- LZ: Sounds like on the how side
+- Slide 6 (packet encoding)
+- AA: recap slide
+- DO: Think slide is accurate
+- Slide 7 (packet structure)
+- AA: recap slide
+- AA: @Marc, there’s a single network adapt and ICN format?
+- MM: yes
+- AA: @marc there’s no link adapt?
+- MM: There’s fragmentation defined.
+- MM: Could you define format?
+- AA: It’s more than that
+- MM: Do you mean there’s multiple sets of TLVs for different networks?
+- DO: A network adaptation header inserted at the first fowarder can make it to the last forwarder.  In NDN, that’s not the expectation, the headers could be different?
+- NS: I think one forwarder could add a header and another remove it.
+- MM: If in my admin domain I insert a header and route it over multiple hops is that network header or link header?
+- LZ: difference between putting a header before a blob or adding a header inside.
+- MM: We’ve defined one place for headers and the definition of that header defines its behavior.
+- NS: The assumption is if you don’t know it, you pass it.
+- MM: Any header that goes before the fixed header it outside the scope of the network level message. 
+- RD: A header can go multiple hops can be defined.  Putting a header in that was added for an domain in a network level place and if something goes wrong and it’s it not removed, then you can get problems if its reinjected in that domain.
+- PP: Do we need to define link adaptation and network adaptation?
+- MM: I think that would be good definition.
+- PP: Can we do that for next week?
+- MM: I think we should have one definition and they describe how each goes about it.
+- LZ: I think what Paul suggested is good
+- PP: You Marc and Alex and coordinate, that would be great.  Please cover for next meeting.
+- Ravi: What Lixia said end-to-end vs trust boundaries is useful description to make. 
+- LZ: What you have now in slide 7 is current state of affairs.  What Paul is asking for is to define each of these things.  Having examples of each would help.
+- (various): yes
+- DK: We’re discussing at high level.  Also to define semantic implications.  What does it mean in different architectures?  Clarify if one or other architecture allows network to signal information to consumers on the network layer (beyond the packet structure).  Need semantic behaviour between consumers, routers, producers that make use of these things.
+- Slide 8 (Looping)
+- AA: Summarize slide
+- AA: In some environments like DTN can kill loops by decrementing Interest LIfetime.
+- MM: “prevent” means no cycle, “detect” means at least one cycle and eventually stop.
+- AA: It’s dangerous to visit same node multiple times (not detect immediately).
+- MM: There is also an InterestLifetime in CCNx too.
+- MM: I think we should discuss on InterestLifetime, but not now.
+- LZ: Is it research on Lifetime or what?
+- MM: Things are being done now in apps.
+- LZ: I think it’s research on how to use it.
+- PP: There’s choices on how to manage looping.  We should discuss in more detail.
+- LZ: How to assess value of InterestLifetime, I think more on research side.
+- DO: What we have now captures current state of affairs.  Don’t think there’s an intent on Interest Lifetime to kill loops.  This it was about user interest in data.  We need actual thhought process on why put in to architecture.
+- RD: Dont think it can be used for both purposes (consumer interest vs loop detection).  Timescales vastly different.  Trying to overload in to one field is bad.
+- End of allocated time
+- PP: Will send out doodle.
+- PP: Assume at same time and date until we change it.
+- PP Will send out recording
+- MM: Notes at end of other google doc.
+
+1
+
