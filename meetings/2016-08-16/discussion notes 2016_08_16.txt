@@ -1,0 +1,38 @@
+Aug 16, 2016
+
+* Consumer reports
+* Is this part of NDN?
+* It’s a research topic
+* MustBeFresh question
+* AA: Are you trying to make case for absolute time stamps?
+* MM: No trying to get answer to question on slides.
+* MM: I’m trying to clarify the case at node C
+* AA: Node A would get the stale content at node D but it would consider it as fresh.  Node A can judge on the version specified if it needs to try again.  Or its fresh enough.
+* MM: If it doesn’t give back fresh data with MustBeFresh then I say flag does not work.
+* AA: It does work but not always. 
+* MM: If it requires external machinery to operate correctly I think that needs to be part of the description.
+* PP: Then it does not operate in all cases
+* AA: I would say if you do not know the name syntax then it you won’t be able to make a choice.  It may be improved with additional mechanisms later.
+* Ankur Sharma: If D has stale it should not respond.  Maybe it should be a link response.  Timestamp should be from the producer.  Node D should refresh it.
+* AA: Problem Marc is pointing out is a problem with the relative time of Freshness seconds.
+* MM: Actually it’s different topics.
+* AA: The way its implemented defines if it is fresh not not fresh.  Packet in transit is always fresh.
+* (various): what do you mean by packet in transit.
+* MM: It applies only to caches.  Always fresh in transit.
+* AA: That’s limitation we have right now.
+* RR: You have expiry time.  That requires sync?
+* MM: Caches require sync time, not forwarders.
+* MM: We can do same thing as HTTP 1.1 computes age to accomodate  synchornized and unsynchorinzed clocks.
+* AA: Expired is different than stale.  Expired requires removing it from system.  Stale is ok to keep.  Age field could solve some of the problems.
+* MM: Yes, Age field outside of signature allows each node to judge freshness on its own.
+* Other topics?
+* PP: Anything people want to discuss?
+* DK: face-to-face in Seoul on Nov 13?
+* CW: Is there a response to Marc’s question on list?  Its not too late after Kyoto.
+* DK: Let us know if you would attend and maybe have meeting.  In Kyoto won’t have much time for convergence discussion.
+* CW: Is there a Kyoto agenda?
+* DK: Not yet.  But we’d like to include more people from Japan, for example, and have research presentations.
+* MM: We could do a dinner and drinks Harmonization during ICN.
+* DK: Think about it and let us know.
+* PP: Will post recording and minutes and Marc’s slides.  Have follow up call next week.  Will do discovery discussion.
+
