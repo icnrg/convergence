@@ -1,0 +1,34 @@
+Hamonization Call Notes 09/06/2016
+
+- (Marc started with reference to selectors document)
+- Does not include a discovery protocol — free to define and use one that works
+- Some discovery mechanisms might work better with participation in the network (e.g., agents that cooperate)
+- PARC made a decision to take discovery out of the minimal forwarding functionality
+- Q: what’s stored in the PIT and what’s matched when the data object is returned?
+	- Non-participating forwarders always match the full name
+	- /foo/bar/<query> -> inner name is /foo/bar/<something else>
+- Example:
+	- Base case: only consumer and producer understand the protocol
+	- Consumer creates discovery query
+	- Producer finds/produces the requested content object and encapsulates it in the response
+		- Encapsulated name can follow any sort of convention
+	- On the path back, non-participating forwarders can cache the entire query+encapsulated response
+	- Upon receipt at consumer, it knows to decapsulate the response to recover the response
+		- If the response isn’t what’s expected, the consumer can use an exclude, retry, etc.
+	- If forwarders participate in the discovery protocol, they may do their own verification of the encapsulated query response
+		- (And could actively drop the packet if a response is deemed an invalid response)
+		- Or it could decapsulate and cache the query response
+- Lixia: does not think that scheme described in draft is equivalent to CCNx 0.8 spec.
+	- What is not equivalent?
+		- The same name, in different contexts, can return different data
+		- If there are not upper-layer nodes that can run the protocol, does that mean the producer must always be online to serve up a discovery response?
+		- Nodes that do not understand the discovery protocol could cache the wrong things
+- Comment: Discovery is needed in ICNs since names are what’s used at the network layer.
+- We need to avoid solving naming when discussing discovery, and vice versa
+- Given a full name, no discovery is needed. With anything less, some sort of discovery is needed.
+- There is no guarantee of uniqueness of response with discovery based on the path/timing of an interest
+	- How a producer names things (allowing duplicates with time bounds, or not) is independent of the discovery process
+- Producer namespace design aids discovery — network cannot enforce any discovery uniqueness results
+- Namespace convention can subvert discovery in some cases, but not all
+- Must the forwarder specification be tied to a specific discovery protocol, or can they be decoupled? (IP+ARP analogy)
+
